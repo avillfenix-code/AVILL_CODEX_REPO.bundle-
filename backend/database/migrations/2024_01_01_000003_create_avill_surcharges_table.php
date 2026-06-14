@@ -10,8 +10,8 @@ class CreateAvillSurchargesTable extends Migration
         Schema::create('avill_surcharges', function (Blueprint $table) {
             $table->id();
             $table->string('name', 150);
-            $table->string('service_type', 80);
-            $table->string('vehicle_mode', 80);
+            $table->string('service_type', 80)->nullable();
+            $table->string('vehicle_mode', 80)->nullable();
             $table->decimal('amount', 20, 4)->default(0);
             $table->boolean('applies_night')->default(false);
             $table->boolean('applies_sunday')->default(false);

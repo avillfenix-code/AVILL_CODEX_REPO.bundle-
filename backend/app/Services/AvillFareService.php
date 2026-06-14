@@ -83,10 +83,6 @@ class AvillFareService
             ->where('pricing_mode', '!=', AvillManualFare::PRICING_MODE_MANUAL_QUOTE)
             ->whereNotNull('base_amount');
 
-        if (in_array('domicilio', $serviceTypes, true)) {
-            $query->where('management_surcharge_amount', '>', 0);
-        }
-
         return $query
             ->where(function ($q) use ($dateTime) { $q->whereNull('starts_at')->orWhereDate('starts_at', '<=', $dateTime->toDateString()); })
             ->where(function ($q) use ($dateTime) { $q->whereNull('ends_at')->orWhereDate('ends_at', '>=', $dateTime->toDateString()); })
@@ -180,8 +176,12 @@ class AvillFareService
         $isHoliday = $this->isHoliday($serviceType, $vehicleMode, $dateTime);
 
         return AvillSurcharge::active()
-            ->where('service_type', $serviceType)
-            ->where('vehicle_mode', $vehicleMode)
+            ->where(function ($q) use ($serviceType) {
+                $q->whereNull('service_type')->orWhere('service_type', $serviceType);
+            })
+            ->where(function ($q) use ($vehicleMode) {
+                $q->whereNull('vehicle_mode')->orWhere('vehicle_mode', $vehicleMode);
+            })
             ->get()
             ->filter(function ($s) use ($dateTime, $isSunday, $isHoliday) {
                 if ($s->applies_night && $this->timeInRange($dateTime, $s->night_starts_at, $s->night_ends_at)) return true;

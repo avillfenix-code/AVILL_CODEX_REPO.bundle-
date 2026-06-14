@@ -18,6 +18,7 @@ class AvillDatabaseSeeder extends Seeder
             AvillServiceAreaSeeder::class,
             AvillSurchargeSeeder::class,
             AvillHolidaySeeder::class,
+            AvillManualFareSeeder::class,
         ]);
     }
 }
