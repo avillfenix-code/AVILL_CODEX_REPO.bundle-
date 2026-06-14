@@ -20,19 +20,27 @@ Copiar los archivos del directorio `backend/` sobre el directorio raíz de Glove
 cp -rT backend/ /var/www/html/glover/
 ```
 
-Esto sobreescribe:
-- `app/Services/AvillFareService.php`
-- `app/Traits/TaxiTrait.php`
-- `app/Models/Avill*.php` (4 modelos)
-- `app/Http/Livewire/Avill*.php` (4 controllers)
-- `app/Http/Livewire/Tables/Avill*.php` (4 tables)
-- `app/Http/Controllers/API/RegularOrderController.php`
-- `app/Http/Controllers/API/PackageOrderController.php`
-- `database/migrations/2024_01_01_000*.php` (4 migraciones)
-- `database/seeders/Avill*.php` (4 seeders)
-- `resources/lang/es/avill.php`
-- `resources/views/livewire/avill_*.blade.php` (4 vistas)
-- `resources/views/layouts/partials/nav/menu.blade.php`
+Esto agrega/sobreescribe:
+- `app/Services/AvillFareService.php` ← nuevo
+- `app/Providers/AvillServiceProvider.php` ← nuevo
+- `app/Traits/TaxiTrait.php` ← reemplaza el de Glover
+- `app/Models/Avill*.php` (4 modelos) ← nuevos
+- `app/Http/Livewire/Avill*.php` (4 controllers) ← nuevos
+- `app/Http/Livewire/Tables/Avill*.php` (4 tables) ← nuevas
+- `database/migrations/` (5 migraciones AVILL) ← nuevas
+- `database/seeders/Avill*.php` (5 seeders) ← nuevos
+- `resources/lang/es/avill.php` ← nuevo
+- `resources/views/livewire/avill_*.blade.php` (4 vistas) ← nuevas
+- `resources/views/layouts/partials/nav/menu.blade.php` ← reemplaza (con sección AVILL añadida)
+
+> **⚠️ MERGE MANUAL REQUERIDO para los controllers API:**
+> Los archivos `backend/app/Http/Controllers/API/RegularOrderController.php` y
+> `PackageOrderController.php` del parche contienen SOLO el método AVILL.
+> **NO sobreescribir** — en cambio, abrir el controller original de Glover y:
+> 1. Agregar `use App\Services\AvillFareService;` al inicio
+> 2. Inyectar `AvillFareService $avillFare` en el constructor
+> 3. Al inicio de `deliveryFeeSummary()` / `summary()`, añadir el bloque AVILL
+>    que aparece en los archivos del parche (con comentario `// Intentar tarifa AVILL primero`)
 
 ## 3. Registrar rutas AVILL
 

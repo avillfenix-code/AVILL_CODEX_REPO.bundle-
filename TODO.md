@@ -6,9 +6,15 @@
 - [x] **Livewire Tables** — columnas, búsqueda y ordenamiento para las 4 secciones ✅
 - [x] **Registrar ServiceProvider** — `AvillServiceProvider` registra `AvillFareService` como singleton ✅ _(agregar a config/app.php en producción)_
 - [x] **Permisos Spatie** — `AvillPermissionsSeeder` crea 8 permisos y los asigna a admin/city-admin ✅
-- [x] **Rutas admin** — `/avill/fares`, `/avill/areas`, `/avill/surcharges`, `/avill/holidays` en web.php ✅
-- [x] **Seeders de datos iniciales** — 27 zonas Quibdó, 4 recargos, 38 festivos 2025-2026 ✅
+- [x] **Rutas admin** — con middleware `permission:view-avill-*` para cada ruta ✅
+- [x] **Seeders de datos iniciales** — 27 zonas Quibdó, 4 recargos, 38 festivos, 17 tarifas de ejemplo ✅
+- [x] **menu.blade.php** — sección AVILL Quibdó con 4 ítems protegidos por `@can` ✅
+- [x] **RegularOrderController + PackageOrderController** — lógica AVILL documentada para merge ✅
+- [x] **Migración correctiva holidays** — `department` y `city` añadidos a `avill_holidays` ✅
+- [x] **AvillHoliday model** — `$fillable` actualizado con `department` y `city` ✅
+- [x] **3 bugs críticos corregidos** — activeSurcharges nullable, findFare sin filtro erróneo, migración surcharges nullable ✅
 - [ ] **php artisan migrate** — ejecutar en servidor de producción _(requiere servidor real)_
+- [ ] **Merge manual controllers API** — ver instrucciones en DEPLOY.md _(requiere servidor con Glover)_
 - [ ] **Verificar regex teléfono** — en Admin → Configuración cambiar código de país a `+57 CO`
 
 ## Flutter Apps

@@ -587,9 +587,13 @@ Route::group(['middleware' => ['web']], function () {
             ->middleware(['permission:view-favourites']);
 
         // AVILL — tarifas fijas Quibdó
-        Route::get('avill/fares', \App\Http\Livewire\AvillManualFareLivewire::class)->name('avill.fares');
-        Route::get('avill/areas', \App\Http\Livewire\AvillServiceAreaLivewire::class)->name('avill.areas');
-        Route::get('avill/surcharges', \App\Http\Livewire\AvillSurchargeLivewire::class)->name('avill.surcharges');
-        Route::get('avill/holidays', \App\Http\Livewire\AvillHolidayLivewire::class)->name('avill.holidays');
+        Route::get('avill/fares', \App\Http\Livewire\AvillManualFareLivewire::class)
+            ->name('avill.fares')->middleware(['permission:view-avill-fares']);
+        Route::get('avill/areas', \App\Http\Livewire\AvillServiceAreaLivewire::class)
+            ->name('avill.areas')->middleware(['permission:view-avill-areas']);
+        Route::get('avill/surcharges', \App\Http\Livewire\AvillSurchargeLivewire::class)
+            ->name('avill.surcharges')->middleware(['permission:view-avill-surcharges']);
+        Route::get('avill/holidays', \App\Http\Livewire\AvillHolidayLivewire::class)
+            ->name('avill.holidays')->middleware(['permission:view-avill-holidays']);
     });
 });

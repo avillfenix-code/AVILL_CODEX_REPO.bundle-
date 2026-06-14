@@ -10,6 +10,8 @@ class AvillHoliday extends Model
         'name',
         'date',
         'country_code',
+        'department',
+        'city',
         'applies_to',
         'is_active',
     ];
