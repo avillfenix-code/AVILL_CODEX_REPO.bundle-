@@ -585,5 +585,11 @@ Route::group(['middleware' => ['web']], function () {
         //favourites
         Route::get('vendors/favourites', FavouriteVendorLivewire::class)->name('vendor.favourites')
             ->middleware(['permission:view-favourites']);
+
+        // AVILL — tarifas fijas Quibdó
+        Route::get('avill/fares', \App\Http\Livewire\AvillManualFareLivewire::class)->name('avill.fares');
+        Route::get('avill/areas', \App\Http\Livewire\AvillServiceAreaLivewire::class)->name('avill.areas');
+        Route::get('avill/surcharges', \App\Http\Livewire\AvillSurchargeLivewire::class)->name('avill.surcharges');
+        Route::get('avill/holidays', \App\Http\Livewire\AvillHolidayLivewire::class)->name('avill.holidays');
     });
 });
