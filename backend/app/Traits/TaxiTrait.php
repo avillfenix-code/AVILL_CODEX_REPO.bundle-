@@ -13,10 +13,15 @@ trait TaxiTrait
 
     public function getTaxiOrderTotalPrice($vehicleType, $pickup, $dropoff)
     {
-        $avillQuote = app(AvillFareService::class)->quoteForTrip(
-            $vehicleType, $pickup, $dropoff, null,
-            (bool) request()->input('is_raining', false)
-        );
+        try {
+            $avillQuote = app(AvillFareService::class)->quoteForTrip(
+                $vehicleType, $pickup, $dropoff, null,
+                (bool) request()->input('is_raining', false)
+            );
+        } catch (\Throwable $e) {
+            logger()->error('AvillFareService error in getTaxiOrderTotalPrice: ' . $e->getMessage());
+            $avillQuote = null;
+        }
 
         if ($avillQuote && !($avillQuote['pending'] ?? false)) {
             return $avillQuote['total'];
@@ -38,7 +43,12 @@ trait TaxiTrait
         $dropoff = request()->latlng ?? ($order->taxi_order->dropoff_latitude . "," . $order->taxi_order->dropoff_longitude);
 
         $vehicleType = VehicleType::find($order->taxi_order->vehicle_type_id);
-        $avillQuote = app(AvillFareService::class)->quoteForTrip($vehicleType, $pickup, $dropoff, null, (bool) request()->input('is_raining', false));
+        try {
+            $avillQuote = app(AvillFareService::class)->quoteForTrip($vehicleType, $pickup, $dropoff, null, (bool) request()->input('is_raining', false));
+        } catch (\Throwable $e) {
+            logger()->error('AvillFareService error in getRecalculatedTaxiOrderTotalPrice: ' . $e->getMessage());
+            $avillQuote = null;
+        }
         if ($avillQuote && !($avillQuote['pending'] ?? false)) { return $avillQuote['total']; }
 
         $distance = round($this->getRelativeDistance($pickup, $dropoff), 2);
@@ -53,7 +63,12 @@ trait TaxiTrait
 
     public function getFareBreakdown($vehicleType, $pickup, $dropoff)
     {
-        $avillQuote = app(AvillFareService::class)->quoteForTrip($vehicleType, $pickup, $dropoff, null, (bool) request()->input('is_raining', false));
+        try {
+            $avillQuote = app(AvillFareService::class)->quoteForTrip($vehicleType, $pickup, $dropoff, null, (bool) request()->input('is_raining', false));
+        } catch (\Throwable $e) {
+            logger()->error('AvillFareService error in getFareBreakdown: ' . $e->getMessage());
+            $avillQuote = null;
+        }
 
         if ($avillQuote) {
             $vehicleType->avill_fixed_fare = (bool) ($avillQuote['avill_fixed_fare'] ?? false);
@@ -85,7 +100,12 @@ trait TaxiTrait
         $pickup = $taxiOrder->pickup_latitude . "," . $taxiOrder->pickup_longitude;
         $dropoff = $taxiOrder->dropoff_latitude . "," . $taxiOrder->dropoff_longitude;
         $vehicleType = VehicleType::find($taxiOrder->vehicle_type_id);
-        $avillQuote = app(AvillFareService::class)->quoteForTrip($vehicleType, $pickup, $dropoff, null, (bool) request()->input('is_raining', false));
+        try {
+            $avillQuote = app(AvillFareService::class)->quoteForTrip($vehicleType, $pickup, $dropoff, null, (bool) request()->input('is_raining', false));
+        } catch (\Throwable $e) {
+            logger()->error('AvillFareService error in getRecalculatedTaxiOrderBreakdown: ' . $e->getMessage());
+            $avillQuote = null;
+        }
 
         if ($avillQuote) { $taxiOrder->trip_distance = 0; $taxiOrder->trip_time = 0; return $taxiOrder; }
 
