@@ -48,7 +48,15 @@ Route::get('avill/holidays',   \App\Http\Livewire\AvillHolidayLivewire::class)->
 
 > El archivo `glover_1840_update/routes/web.php` en este repositorio ya tiene las rutas incluidas como referencia.
 
-## 4. Ejecutar migraciones y seeders
+## 4. Registrar el ServiceProvider AVILL
+
+En `config/app.php`, dentro del array `providers`, agregar antes del cierre del array:
+
+```php
+App\Providers\AvillServiceProvider::class,
+```
+
+## 6. Ejecutar migraciones y seeders
 
 ```bash
 php artisan migrate
@@ -56,11 +64,12 @@ php artisan db:seed --class=AvillDatabaseSeeder
 ```
 
 Esto crea las 4 tablas AVILL y carga:
+- Permisos Spatie para rol `admin` y `city-admin`
 - 27 zonas de Quibdó (sin polígonos GeoJSON aún)
 - 4 recargos base (nocturno, dominical, festivo, nocturno festivo)
 - 38 festivos colombianos 2025-2026
 
-## 5. Configurar el admin panel
+## 7. Configurar el admin panel
 
 ```
 Admin → Configuración → País → Colombia (CO)
@@ -68,7 +77,7 @@ Admin → Configuración → Moneda → Peso Colombiano (COP)
 Admin → Configuración → Código de país → +57
 ```
 
-## 6. Aplicar el parche Flutter
+## 8. Aplicar el parche Flutter
 
 ```bash
 cp -rT apps/customer/ /path/to/flutter/customer/
@@ -76,7 +85,7 @@ cp -rT apps/driver/   /path/to/flutter/driver/
 cp -rT apps/vendor/   /path/to/flutter/vendor/
 ```
 
-## 7. Configurar Firebase
+## 9. Configurar Firebase
 
 1. Crear proyecto en [Firebase Console](https://console.firebase.google.com)
 2. Agregar app Android/iOS para cada una de las 3 apps (customer, driver, vendor)
@@ -86,7 +95,7 @@ cp -rT apps/vendor/   /path/to/flutter/vendor/
    - `driver/android/app/google-services.json`
    - `vendor/android/app/google-services.json`
 
-## 8. Cargar polígonos GeoJSON de Quibdó
+## 10. Cargar polígonos GeoJSON de Quibdó
 
 Para que el sistema de tarifa fija detecte automáticamente en qué zona está el origen:
 
@@ -96,7 +105,7 @@ Para que el sistema de tarifa fija detecte automáticamente en qué zona está e
 
 Sin polígonos, el sistema cae al pricing estándar de Glover (km + minuto).
 
-## 9. Compilar y publicar las apps Flutter
+## 11. Compilar y publicar las apps Flutter
 
 ```bash
 cd customer && flutter build apk --release
@@ -104,7 +113,7 @@ cd driver   && flutter build apk --release
 cd vendor   && flutter build apk --release
 ```
 
-## 10. Verificación final
+## 12. Verificación final
 
 ```bash
 # Probar que las migraciones están ok

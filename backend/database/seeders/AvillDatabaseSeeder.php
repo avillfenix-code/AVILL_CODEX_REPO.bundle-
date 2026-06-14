@@ -14,6 +14,7 @@ class AvillDatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
+            AvillPermissionsSeeder::class,
             AvillServiceAreaSeeder::class,
             AvillSurchargeSeeder::class,
             AvillHolidaySeeder::class,
