@@ -8,6 +8,10 @@ class AvillServiceArea extends Model
 {
     protected $fillable = [
         'name',
+        'type',
+        'city',
+        'department',
+        'country_code',
         'map_polygon',
         'is_active',
     ];

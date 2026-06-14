@@ -10,6 +10,10 @@ class CreateAvillServiceAreasTable extends Migration
         Schema::create('avill_service_areas', function (Blueprint $table) {
             $table->id();
             $table->string('name', 150);
+            $table->string('type', 50)->nullable()->default('zona');
+            $table->string('city', 100)->nullable()->default('Quibdó');
+            $table->string('department', 100)->nullable()->default('Chocó');
+            $table->string('country_code', 5)->nullable()->default('CO');
             $table->json('map_polygon')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
