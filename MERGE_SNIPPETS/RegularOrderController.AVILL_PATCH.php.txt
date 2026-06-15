@@ -1,0 +1,78 @@
+<?php
+/**
+ * AVILL PATCH — RegularOrderController
+ *
+ * NO COPIES ESTE ARCHIVO SOBRE EL CONTROLLER DE GLOVER.
+ * Solo agrega el código marcado con [AVILL ADD] al controller existente.
+ *
+ * PASOS:
+ * 1. Abrir:  app/Http/Controllers/API/RegularOrderController.php  (en Glover instalado)
+ * 2. Agregar el use de AvillFareService en los imports (arriba del class):
+ * 3. Agregar la propiedad y constructor modificado (o inyectar en constructor existente)
+ * 4. Agregar el bloque AVILL al INICIO del método deliveryFeeSummary()
+ */
+
+// ─────────────────────────────────────────────────────────
+// [AVILL ADD] — en los imports del archivo (justo antes del class)
+// ─────────────────────────────────────────────────────────
+use App\Services\AvillFareService;
+
+
+// ─────────────────────────────────────────────────────────
+// [AVILL ADD] — propiedad dentro del class
+// ─────────────────────────────────────────────────────────
+protected AvillFareService $avillFare;
+
+
+// ─────────────────────────────────────────────────────────
+// [AVILL ADD] — en el constructor existente del controller,
+// agregar el parámetro y la asignación:
+//
+//   public function __construct(AvillFareService $avillFare, /* ...otros parámetros existentes... */) {
+//       $this->avillFare = $avillFare;
+//       // ... código existente del constructor ...
+//   }
+// ─────────────────────────────────────────────────────────
+
+
+// ─────────────────────────────────────────────────────────
+// [AVILL ADD] — al INICIO del método deliveryFeeSummary(),
+// ANTES de cualquier código existente de Glover:
+// ─────────────────────────────────────────────────────────
+function deliveryFeeSummary_AVILL_BLOCK(Request $request)
+{
+    $stops = $request->input('stops');
+
+    // Consultar AvillFareService primero
+    try {
+        $avillQuote = $this->avillFare->quoteForDelivery($stops);
+    } catch (\Throwable $e) {
+        logger()->error('AvillFareService error in deliveryFeeSummary: ' . $e->getMessage());
+        $avillQuote = null;
+    }
+
+    if ($avillQuote) {
+        if ($avillQuote['pending']) {
+            return response()->json([
+                'delivery_fee'       => 0,
+                'avill_fixed_fare'   => false,
+                'avill_fare_pending' => true,
+                'avill_quote'        => $avillQuote,
+                'message'            => $avillQuote['message'],
+            ]);
+        }
+
+        return response()->json([
+            'delivery_fee'       => $avillQuote['total'],
+            'avill_fixed_fare'   => true,
+            'avill_fare_pending' => false,
+            'avill_quote'        => $avillQuote,
+        ]);
+    }
+
+    // Si retorna null → origen fuera de zona AVILL → continúa con lógica Glover debajo
+}
+// ─────────────────────────────────────────────────────────
+// Después del bloque anterior, DEJAR TODO EL CÓDIGO ORIGINAL
+// de Glover del método deliveryFeeSummary() sin cambios.
+// ─────────────────────────────────────────────────────────
